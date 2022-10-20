@@ -1,5 +1,7 @@
 CREATE TABLE IF NOT EXISTS customer (
-                          id int AUTO_INCREMENT PRIMARY KEY,
+                          id INT AUTO_INCREMENT PRIMARY KEY,
+                          username VARCHAR(24),
+                          user_password VARCHAR(24),
                           first_name VARCHAR(20),
                           last_name VARCHAR(30),
                           email VARCHAR(50),

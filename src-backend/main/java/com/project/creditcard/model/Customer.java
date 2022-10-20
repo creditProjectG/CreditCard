@@ -18,6 +18,11 @@ public class Customer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "username")
+    private String username;
+    @Column(name = "user_password")
+    private String user_password;
+
     @Column(name ="firstName")
     private String firstName;
     @Column(name ="lastName")
