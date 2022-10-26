@@ -28,7 +28,9 @@ const Register = () => {
     const [errMsg, setErrMsg] = useState('');
     const [success, setSuccess] = useState(false);
 
-    const [id, setId] = useState('');
+    //const [id, setId] = useState('');
+
+    const {id} = useParams();
 
     const [firstName, setFirstName] = useState('')
     const [lastName, setLastName] = useState('')
@@ -42,14 +44,30 @@ const Register = () => {
 
     const navigate = useNavigate();
 
-    const customer = {id, username, user_password, firstName, lastName, email, company_name, address1, customerCity, customerState, customerZip, mobile_phone}
+    const saveOrUpdateCustomer = (e) => {
+        e.preventDefault();
+
+        const customer = {id, username, user_password, firstName, lastName, email, company_name, address1, customerCity, customerState, customerZip, mobile_phone}
+
+
+        CustomerService.createCustomer(customer).then((response) =>{
+
+            console.log(response.data)
+
+            navigate(`/login/${customer.id}`);
+
+        }).catch(error => {
+            console.log(error)
+        })
+
+    }
     
-    const unique = uuid();
-    const small_id = unique.slice(0, 10)
+    //const unique = uuid();
+    //const small_id = unique.slice(0, 10)
 
     useEffect(() => {
         CustomerService.getCustomerById(id).then((response) =>{
-            setId(small_id)
+            //setId(small_id)
             setFirstName(response.data.firstName)
             setLastName(response.data.lastName)
             setEmailId(response.data.email)
@@ -92,14 +110,14 @@ const Register = () => {
             return;
         }
         try {
-            // const customer = {username, user_password, firstName, lastName, email, company_name, address1, customerCity, customerState, customerZip, mobile_phone}
-            // const response = await CustomerService.register(customer, username, user_password).then((response) =>{
-                const response = await CustomerService.createCustomer(customer).then((response) =>{
+        //     // const customer = {username, user_password, firstName, lastName, email, company_name, address1, customerCity, customerState, customerZip, mobile_phone}
+        //     // const response = await CustomerService.register(customer, username, user_password).then((response) =>{
+        //         const response = await saveOrUpdateCustomer.then((response) =>{
 
-                console.log(customer)
-                navigate(`/customer/${customer.id}`)
-            }).catch(error => {
-            })
+        //         console.log(customer)
+        //         navigate(`/login`)
+        //     }).catch(error => {
+        //     })
             
             // TODO: remove console.logs before deployment
             //console.log(JSON.stringify(response))
@@ -203,113 +221,9 @@ const Register = () => {
                             Must match the first password input field.
                         </p>
 
-
-                        <label htmlFor="first_name">
-                            First Name:
-                        </label>
-                        <input
-                            type="text"
-                            id="first_name"
-                            onChange={(e) => setFirstName(e.target.value)}
-                            value={firstName}
-                            placeholder = "Enter first name"
-                            required
-                        />
-                        
-
-                        <label htmlFor="last_name">
-                            Last Name:
-                        </label>
-                        <input
-                            type="text"
-                            id="last_name"
-                            onChange={(e) => setLastName(e.target.value)}
-                            value={lastName}
-                            placeholder = "Enter last name"
-                            required
-                        />
-
-
-                        <label htmlFor="email">
-                            Email:
-                        </label>
-                        <input
-                            type="text"
-                            id="email"
-                            onChange={(e) => setEmailId(e.target.value)}
-                            value={email}
-                            placeholder = "Enter email"
-                            required
-                        />
-
-
-                        <label htmlFor="street">
-                            Street:
-                        </label>
-                        <input
-                            type="text"
-                            id="street"
-                            onChange={(e) => setAddress(e.target.value)}
-                            value={address1}
-                            placeholder = "Enter street"
-                            required
-                        />
-
-                        
-                        <label htmlFor="city">
-                            City:
-                        </label>
-                        <input
-                            type="text"
-                            id="city"
-                            onChange={(e) => setCustomerCity(e.target.value)}
-                            value={customerCity}
-                            placeholder = "Enter city"
-                            required
-                        />
-
-                        
-                        <label htmlFor="state">
-                            State:
-                        </label>
-                        <input
-                            type="text"
-                            id="state"
-                            onChange={(e) => setCustomerState(e.target.value)}
-                            value={customerState}
-                            placeholder = "Enter state"
-                            required
-                        />
-
-                        
-                        <label htmlFor="zip">
-                            Zip:
-                        </label>
-                        <input
-                            type="text"
-                            id="zip"
-                            onChange={(e) => setCustomerZip(e.target.value)}
-                            value={customerZip}
-                            placeholder = "Enter zip"
-                            required
-                        />
-
-                        
-                        <label htmlFor="phone">
-                            Phone:
-                        </label>
-                        <input
-                            type="text"
-                            id="phone"
-                            onChange={(e) => setPhone(e.target.value)}
-                            value={mobile_phone}
-                            placeholder = "Enter phone"
-                            required
-                        />
-
                         <br />
 
-                        <button disabled={!validName || !validPwd || !validMatch ? true : false}>Sign Up</button>
+                        <button disabled={!validName || !validPwd || !validMatch ? true : false} onClick = {(e) => saveOrUpdateCustomer(e)}>Sign Up</button>
                     </form>
                     <p>
                         Already registered?<br />

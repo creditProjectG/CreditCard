@@ -3,18 +3,15 @@ import { Link } from 'react-router-dom'
 import CustomerService from '../services/CustomerService'
 
 const ListCustomerComponent = () => {
-
     const [customers, setCustomers] = useState([])
 
     useEffect(() => {
-
         getAllCustomers();
     }, [])
 
     const getAllCustomers = () => {
         CustomerService.getCustomers().then((response) => {
             setCustomers(response.data)
-            console.log(response.data);
         }).catch(error =>{
             console.log(error);
         })
@@ -23,7 +20,6 @@ const ListCustomerComponent = () => {
     const deleteCustomer = (customerId) => {
        CustomerService.deleteCustomer(customerId).then((response) =>{
         getAllCustomers();
-
        }).catch(error =>{
            console.log(error);
        })

@@ -21,7 +21,7 @@ public class CustomerService {
         return customers;
     }
 
-    public Customer getCustomerById(String id) {
+    public Customer getCustomerById(int id) {
         return customerRepository.findById(id).get();
     }
 
@@ -29,7 +29,7 @@ public class CustomerService {
         customerRepository.save(customer);
     }
 
-    public void delete(String id) {
+    public void delete(int id) {
         customerRepository.deleteById(id);
     }
 }

@@ -40,7 +40,7 @@ public class CustomerController {
 
     // build get customer by id REST API
     @GetMapping("{id}")
-    public ResponseEntity<Customer> getId(@PathVariable String id){
+    public ResponseEntity<Customer> getId(@PathVariable int id){
         Customer customer = customerRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Customer not exist with id:" + id));
         return ResponseEntity.ok(customer);
@@ -48,7 +48,7 @@ public class CustomerController {
 
     // build update customer REST API
     @PutMapping("{id}")
-    public ResponseEntity<Customer> updateCustomer(@PathVariable String id,@RequestBody Customer customerDetails) {
+    public ResponseEntity<Customer> updateCustomer(@PathVariable int id,@RequestBody Customer customerDetails) {
         Customer updateCustomer = customerRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Customer not exist with id: " + id));
 
@@ -68,7 +68,7 @@ public class CustomerController {
 
     // build delete customer REST API
     @DeleteMapping("{id}")
-    public ResponseEntity<HttpStatus> deleteCustomer(@PathVariable String id){
+    public ResponseEntity<HttpStatus> deleteCustomer(@PathVariable int id){
 
         Customer customer = customerRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Customer not exist with id: " + id));

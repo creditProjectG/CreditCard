@@ -1,16 +1,25 @@
 import React, {useState, useEffect} from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useParams, useNavigate } from 'react-router-dom'
 import CustomerService from '../services/CustomerService'
 
-const ListCustomer = () => {
 
-    const {username} = useParams()
-    const {user_password} = useParams()
+const ListCustomer = () => {
+    const {id} = useParams()
+    const [firstName, setFirstName] = useState('')
+    const [lastName, setLastName] = useState('')
+    const [username, setUsername] = useState('')
+    const [user_password, setUserPassword] = useState('')
+    const [email, setEmailId] = useState('')
+    const [address1, setAddress] = useState('')
+    const [customerCity, setCustomerCity] = useState('')
+    const [customerState, setCustomerState] = useState('')
+    const [customerZip, setCustomerZip] = useState('')
+    const [mobile_phone, setPhone] = useState('')
+    const navigate = useNavigate();
 
     const [customers, setCustomers] = useState([])
 
     useEffect(() => {
-
         getAllCustomers();
     }, [])
 
@@ -23,6 +32,23 @@ const ListCustomer = () => {
         })
     }
 
+    useEffect(() => {
+        CustomerService.getCustomerById(id).then((response) =>{
+            setFirstName(response.data.firstName)
+            setLastName(response.data.lastName)
+            setUsername(response.data.username)
+            setUserPassword(response.data.user_password)
+            setEmailId(response.data.email)
+            setAddress(response.data.address1)
+            setCustomerCity(response.data.customerCity)
+            setCustomerState(response.data.customerState)
+            setCustomerZip(response.data.customerZip)
+            setPhone(response.data.mobile_phone)
+        }).catch(error => {
+            console.log(error)
+        })
+    }, [])
+
     const deleteCustomer = (customerId) => {
        CustomerService.deleteCustomer(customerId).then((response) =>{
         getAllCustomers();
@@ -30,13 +56,12 @@ const ListCustomer = () => {
        }).catch(error =>{
            console.log(error);
        })
-        
     }
 
     return (
         <div className = "container">
             <h2 className = "text-center"> List Customers </h2>
-            <Link to = "/customer-form" className = "btn btn-primary mb-2" > Add Customer </Link>
+            <Link to={`/add-card/${id}`} className = "btn btn-primary mb-2" > Add Card </Link>
             <table className="table table-bordered table-striped">
                 <thead>
                     <tr>
@@ -49,30 +74,26 @@ const ListCustomer = () => {
                         <th> State </th>
                         <th> Zip </th>
                         <th> Phone Number </th>
+                        <th> Options </th>
                     </tr>
                 </thead>
                 <tbody>
-                    {
-                        customers.map(
-                            customer =>
-                            <tr key = {customer.username && customer.user_password}> 
-                                <td> {customer.id}</td>
-                                <td> {customer.firstName}</td>
-                                <td> {customer.lastName}</td>
-                                <td> {customer.email}</td>
-                                <td> {customer.address1}</td>
-                                <td> {customer.customerCity}</td>
-                                <td> {customer.customerState}</td>
-                                <td> {customer.customerZip}</td>
-                                <td> {customer.mobile_phone}</td>
-                                <td>
-                                    <Link className="btn btn-info" to={`/edit-customer/${customer.id}`}>Update</Link>
-                                    <button className = "btn btn-danger" onClick = {() => deleteCustomer(customer.id)}
-                                    style = {{marginLeft:"10px"}}>Delete</button>
-                                </td>
-                            </tr>
-                        )
-                    }
+                    <tr>
+                        <td> {id}</td>
+                        <td> {firstName}</td>
+                        <td> {lastName}</td>
+                        <td> {email}</td>
+                        <td> {address1}</td>
+                        <td> {customerCity}</td>
+                        <td> {customerState}</td>
+                        <td> {customerZip}</td>
+                        <td> {mobile_phone}</td>
+                        <td>
+                            <Link className="btn btn-info" to={`/edit-customer/${id}`}>Update</Link>
+                            <button className = "btn btn-danger" onClick = {() => deleteCustomer(id)}
+                            style = {{marginLeft:"10px"}}>Delete</button>
+                        </td>
+                    </tr>
                 </tbody>
             </table>
         </div>

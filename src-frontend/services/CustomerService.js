@@ -12,10 +12,6 @@ class CustomerService {
         return axios.post(CUSTOMER_BASE_REST_API_URL, customer)
     }
 
-    retrieveCustomer(username, user_password){
-        return axios.get(CUSTOMER_BASE_REST_API_URL + '/' + username, user_password);
-    }
-
     getCustomerById(customerId){
         return axios.get(CUSTOMER_BASE_REST_API_URL + '/' + customerId);
     }
