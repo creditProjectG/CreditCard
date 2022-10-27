@@ -3,8 +3,6 @@ import { useNavigate, useParams } from 'react-router-dom';
 import CustomerService from '../services/CustomerService'
 import { faCheck, faTimes, faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import AddCustomerComponent from "./AddCustomerComponent";
-import uuid from 'react-uuid';
 
 const USER_REGEX = /^[A-z][A-z0-9-_]{3,23}$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
@@ -26,61 +24,32 @@ const Register = () => {
     const [matchFocus, setMatchFocus] = useState(false);
 
     const [errMsg, setErrMsg] = useState('');
-    const [success, setSuccess] = useState(false);
 
-    //const [id, setId] = useState('');
+    const [customers, setCustomers] = useState([])
 
     const {id} = useParams();
 
-    const [firstName, setFirstName] = useState('')
-    const [lastName, setLastName] = useState('')
-    const [email, setEmailId] = useState('')
-    const [company_name, setCompanyName] = useState('')
-    const [address1, setAddress] = useState('')
-    const [customerCity, setCustomerCity] = useState('')
-    const [customerState, setCustomerState] = useState('')
-    const [customerZip, setCustomerZip] = useState('')
-    const [mobile_phone, setPhone] = useState('')
-
     const navigate = useNavigate();
+
+    var create = 0
 
     const saveOrUpdateCustomer = (e) => {
         e.preventDefault();
 
-        const customer = {id, username, user_password, firstName, lastName, email, company_name, address1, customerCity, customerState, customerZip, mobile_phone}
+        const customer = {id, username, user_password}
 
 
         CustomerService.createCustomer(customer).then((response) =>{
 
             console.log(response.data)
 
-            navigate(`/login/${customer.id}`);
+            navigate(`/login`);
 
         }).catch(error => {
             console.log(error)
         })
 
     }
-    
-    //const unique = uuid();
-    //const small_id = unique.slice(0, 10)
-
-    useEffect(() => {
-        CustomerService.getCustomerById(id).then((response) =>{
-            //setId(small_id)
-            setFirstName(response.data.firstName)
-            setLastName(response.data.lastName)
-            setEmailId(response.data.email)
-            setCompanyName(response.data.company_name)
-            setAddress(response.data.address1)
-            setCustomerCity(response.data.customerCity)
-            setCustomerState(response.data.customerState)
-            setCustomerZip(response.data.customerZip)
-            setPhone(response.data.mobile_phone)
-        }).catch(error => {
-            console.log(error)
-        })
-    }, [])
 
     useEffect(() => {
         userRef.current.focus();
@@ -102,7 +71,6 @@ const Register = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // if button enabled with JS hack
         const v1 = USER_REGEX.test(username);
         const v2 = PWD_REGEX.test(user_password);
         if (!v1 || !v2) {
@@ -110,21 +78,26 @@ const Register = () => {
             return;
         }
         try {
-        //     // const customer = {username, user_password, firstName, lastName, email, company_name, address1, customerCity, customerState, customerZip, mobile_phone}
-        //     // const response = await CustomerService.register(customer, username, user_password).then((response) =>{
-        //         const response = await saveOrUpdateCustomer.then((response) =>{
+            const customer = {id, username, user_password}
 
-        //         console.log(customer)
-        //         navigate(`/login`)
-        //     }).catch(error => {
-        //     })
-            
-            // TODO: remove console.logs before deployment
-            //console.log(JSON.stringify(response))
-            setSuccess(true);
-            setUsername('');
-            setUserPassword('');
-            setMatchPwd('');
+            for(let index = 0; index < customers.length; index++){
+                await CustomerService.getCustomerById(index+1).then((response) => {
+                    if (response.data.username === customer.username){
+                        create++
+                        setErrMsg('Username Taken')
+                    }
+                }).catch(error => {
+                    setErrMsg('Login Failed');
+                }) 
+            }
+
+            if (create === 0){
+                CustomerService.createCustomer(customer).then((response) =>{
+                    navigate('/login');
+                }).catch(error => {
+                    console.log(error)
+                })
+            }
         } catch (err) {
             if (!err?.response) {
                 setErrMsg('No Server Response');

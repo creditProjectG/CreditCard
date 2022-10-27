@@ -24,6 +24,12 @@ public class CardController {
         return cardRepository.findAll();
     }
 
+    //get cards by customer id
+    @GetMapping("/customer/{customer_id}")
+    public List<Card> getCreditCardByCustomerId(@PathVariable int customer_id) {
+        return cardRepository.findAllByCustomerId(customer_id);
+    }
+
     @PostMapping
     public Card createCard(@RequestBody Card card){
         return cardRepository.save(card);

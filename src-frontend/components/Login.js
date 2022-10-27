@@ -39,13 +39,18 @@ const Login = () => {
             for(let index = 0; index < customers.length; index++){
                 await CustomerService.getCustomerById(index+1).then((response) => {
                     if (response.data.username === customer.username && response.data.user_password === customer.user_password){
-                        navigate(`/ListCustomer/${index+1}`)
+                        if (response.data.firstName){
+                            navigate(`/ListCustomer/${index+1}`)
+                        }
+                        else{
+                            navigate(`/edit-customer/${index+1}`)
+                        }
                     }
                 }).catch(error => {
                     setErrMsg('Login Failed');
                     console.log(error)
                 }) 
-            }  
+            }
         } catch (err) {
             setErrMsg('Login Failed');
             errRef.current.focus();

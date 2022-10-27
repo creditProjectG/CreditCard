@@ -19,7 +19,7 @@ function App() {
           <Routes>
             <Route index element={<Login />} />
             <Route path="/" element={<Login />}></Route> 
-            <Route path="/register" element={<AddCustomerComponent />}></Route>
+            <Route path="/register" element={<Register />}></Route>
             <Route path="/customers" element={<ListCustomerComponent />}></Route>
             <Route path="/customer/:id" element={<Customer />}></Route>
             <Route path="/ListCustomer/:id" element={<ListCustomer />}></Route>
@@ -28,7 +28,7 @@ function App() {
             <Route path="/edit-customer/:id" element={<AddCustomerComponent />}></Route>
             <Route path="/login" element={<Login />}></Route>
             <Route path="/add-card/:id" element={<AddCardComponent />}></Route>
-            <Route path="/ListCards" element={<ListCardComponent />}></Route>
+            <Route path="/ListCards/:id" element={<ListCardComponent />}></Route>
           </Routes>
           <FooterComponent />
       </Router>

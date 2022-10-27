@@ -9,30 +9,34 @@ const AddCardComponent = () => {
     const [expire_year, setexpire_year] = useState('')
     const [cvv_id, setcvv_id] = useState('')
     const [card_type_id, setcard_type_id] = useState('')
-    const [customer_id, setcustomer_id] = useState('')
 
+    const {customer_id} = useParams()
+
+    const {id} = useParams()
 
     const navigate = useNavigate();
-    const { id } = useParams();
+    //const { id } = useParams();
 
     const saveOrUpdateCard = (e) => {
         e.preventDefault();
 
-        const card = { cc_number, expire_month, expire_year, cvv_id, card_type_id, customer_id }
+        const card = { id, cc_number, expire_month, expire_year, cvv_id, card_type_id, customer_id }
 
         // if (id) {
         //     CardService.updateCard(id, card).then((response) => {
-        //     navigate('/ListCards')
+        //     navigate(`/ListCards/${customer_id}`)
         //     }).catch(error => {
         //         console.log(error)
         //     })
 
         // } else {
+            console.log("before")
             CardService.createCard(card).then((response) => {
 
                 //console.log(response.data)
-
-                navigate('/ListCards');
+                console.log(id)
+                console.log(customer_id)
+                navigate(`/ListCards/${customer_id}`);
 
             }).catch(error => {
                 console.log(error)
@@ -49,11 +53,10 @@ const AddCardComponent = () => {
             setexpire_year(response.data.expire_year)
             setcvv_id(response.data.cvv_id)
             setcard_type_id(response.data.card_type_id)
-            setcustomer_id(response.data.customer_id)
         }).catch(error => {
             console.log(error)
         })
-    }, [id])
+    }, [])
 
     const title = () => {
 
@@ -140,22 +143,9 @@ const AddCardComponent = () => {
                                     </input>
                                 </div>
 
-                                <div className="form-group mb-2">
-                                    <label className="form-label"> Customer ID:</label>
-                                    <input
-                                        type="text"
-                                        placeholder="Customer ID"
-                                        name="custerom_id"
-                                        className="form-control"
-                                        value={customer_id}
-                                        onChange={(e) => setcustomer_id(e.target.value)}
-                                    >
-                                    </input>
-                                </div>
-
                                 <button className="btn btn-success" onClick={(e) => saveOrUpdateCard(e)} >Submit </button>
                                 <Link to="/customers" className="btn btn-danger"> Cancel </Link>
-                                <Link className="btn btn-warning" to={`/customer/${customer_id}/_cards`} >Back To Customer Info</Link>
+                                <Link className="btn btn-warning" to={`/customer/${id}/_cards`} >Back To Customer Info</Link>
                                 
                             </form>
 

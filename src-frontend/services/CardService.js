@@ -24,6 +24,9 @@ class CardService {
         return axios.delete(CARD_REST_API_URL + '/' + id);
     }
 
+    getCardByCustomerId(c_id){
+        return axios.get(CARD_REST_API_URL + '/customer/' + c_id);
+    }
 }
 
 export default new CardService();
