@@ -6,7 +6,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.List;
+
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Getter
 @Setter
@@ -34,7 +36,9 @@ public class Card {
     @Column(name = "card_type_id")
     private String card_type_id;
 
-    @ManyToOne(optional=false)
-    @JoinColumn(name = "id", insertable=false, updatable=false)
+    @Column(name = "card_type")
+    private String card_type;
+
+    @ManyToOne
     private Customer customer;
 }

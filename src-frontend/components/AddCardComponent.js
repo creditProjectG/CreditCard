@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import CardService from '../services/CardService';
+import CustomerService from '../services/CustomerService';
+import CardType from '../services/CardType';
+
+const USER_REGEX = /^[A-z]$/;
 
 const AddCardComponent = () => {
 
@@ -10,49 +14,83 @@ const AddCardComponent = () => {
     const [cvv_id, setcvv_id] = useState('')
     const [card_type_id, setcard_type_id] = useState('')
 
-    const {customer_id} = useParams()
+    const [firstName, setFirstName] = useState('')
+    const [lastName, setLastName] = useState('')
+    const [username, setUsername] = useState('')
+    const [user_password, setUserPassword] = useState('')
+    const [email, setEmailId] = useState('')
+    const [company_name, setCompanyName] = useState('')
+    const [address1, setAddress] = useState('')
+    const [customerCity, setCustomerCity] = useState('')
+    const [customerState, setCustomerState] = useState('')
+    const [customerZip, setCustomerZip] = useState('')
+    const [mobile_phone, setPhone] = useState('')
+    const [card_type, setCardTypeId] = useState('')
+
+    const [validName, setValidName] = useState(false);
+
+    const [cardType, setCardType] = useState([])
 
     const {id} = useParams()
+    const {cc_id} = useParams()
 
     const navigate = useNavigate();
-    //const { id } = useParams();
+
+    useEffect(() => {
+        CustomerService.getCustomerById(id).then((response) =>{
+            setFirstName(response.data.firstName)
+            setLastName(response.data.lastName)
+            setUsername(response.data.username)
+            setUserPassword(response.data.user_password)
+            setEmailId(response.data.email)
+            setCompanyName(response.data.company_name)
+            setAddress(response.data.address1)
+            setCustomerCity(response.data.customerCity)
+            setCustomerState(response.data.customerState)
+            setCustomerZip(response.data.customerZip)
+            setPhone(response.data.mobile_phone)
+        }).catch(error => {
+            console.log(error)
+        })
+    }, [])
+
+    useEffect(() => {
+        setValidName(USER_REGEX.test(card_type));
+    }, [card_type])
+
+    useEffect(() => {
+        CardType.getCard().then((response) => {
+            setCardType(response.data)
+        }).catch(error =>{
+            console.log(error);
+        })
+    }, [])
 
     const saveOrUpdateCard = (e) => {
         e.preventDefault();
 
-        const card = { id, cc_number, expire_month, expire_year, cvv_id, card_type_id, customer_id }
+        const customer = {id, username, user_password, firstName, lastName, email, company_name, address1, customerCity, customerState, customerZip, mobile_phone}
 
-        // if (id) {
-        //     CardService.updateCard(id, card).then((response) => {
-        //     navigate(`/ListCards/${customer_id}`)
-        //     }).catch(error => {
-        //         console.log(error)
-        //     })
+        const card = { cc_id, cc_number, expire_month, expire_year, cvv_id, card_type_id, card_type, customer }
 
-        // } else {
-            console.log("before")
+        if(card.card_type){
             CardService.createCard(card).then((response) => {
-
-                //console.log(response.data)
-                console.log(id)
-                console.log(customer_id)
-                navigate(`/ListCards/${customer_id}`);
-
+                navigate(`/ListCustomer/${id}`);
             }).catch(error => {
                 console.log(error)
             })
-        // }
-
+        }
     }
 
     useEffect(() => {
 
-        CardService.getCardById(id).then((response) => {
+        CardService.getCardById(cc_id).then((response) => {
             setcc_number(response.data.cc_number)
             setexpire_month(response.data.expire_month)
             setexpire_year(response.data.expire_year)
             setcvv_id(response.data.cvv_id)
             setcard_type_id(response.data.card_type_id)
+            setCardTypeId(response.data.card_type)
         }).catch(error => {
             console.log(error)
         })
@@ -60,7 +98,7 @@ const AddCardComponent = () => {
 
     const title = () => {
 
-        if (id) {
+        if (cc_id) {
             return <h2 className="text-center">Update  Card</h2>
         } else {
             return <h2 className="text-center">Add  Card</h2>
@@ -131,7 +169,7 @@ const AddCardComponent = () => {
                                 </div>
 
                                 <div className="form-group mb-2">
-                                    <label className="form-label"> Card Type (debit or ):</label>
+                                    <label className="form-label"> Debit/Credit:</label>
                                     <input
                                         type="text"
                                         placeholder="Enter  or Debit"
@@ -143,10 +181,22 @@ const AddCardComponent = () => {
                                     </input>
                                 </div>
 
-                                <button className="btn btn-success" onClick={(e) => saveOrUpdateCard(e)} >Submit </button>
-                                <Link to="/customers" className="btn btn-danger"> Cancel </Link>
-                                <Link className="btn btn-warning" to={`/customer/${id}/_cards`} >Back To Customer Info</Link>
-                                
+                                <div className="form-group mb-2">
+                                    <label className="form-label"> Card Type:</label>
+                                    <br />
+                                    <select aria-invalid={validName ? "false" : "true"} onChange={(e) => setCardTypeId(e.target.value)}>
+                                        <option value="none" selected disabled hidden>* Select an Option</option>
+                                        {
+                                            cardType.map((
+                                                card_type) =>
+                                                <option key={card_type.id}>{card_type.c_type}</option>
+                                            )
+                                        }
+                                    </select>
+                                </div>
+
+                                <button className="btn btn-success mb-2 mt-3" onClick={(e) => saveOrUpdateCard(e)} >Submit </button>
+                                <Link to={`/ListCustomer/${id}`} className="btn btn-danger"> Cancel </Link>                                
                             </form>
 
                         </div>

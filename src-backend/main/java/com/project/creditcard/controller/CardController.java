@@ -2,7 +2,6 @@ package com.project.creditcard.controller;
 
 import com.project.creditcard.model.Card;
 import com.project.creditcard.repository.CardRepository;
-import com.project.creditcard.Service.CardService;
 import com.project.creditcard.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -17,8 +16,6 @@ public class CardController {
     @Autowired
     private CardRepository cardRepository;
 
-    private CardService cardService;
-
     @GetMapping
     public List<Card> getAllCards(){
         return cardRepository.findAll();
@@ -28,6 +25,15 @@ public class CardController {
     @GetMapping("/customer/{customer_id}")
     public List<Card> getCreditCardByCustomerId(@PathVariable int customer_id) {
         return cardRepository.findAllByCustomerId(customer_id);
+    }
+
+    @DeleteMapping("/customer/{customer_id}")
+    public ResponseEntity<HttpStatus> deleteCardByCustomerId(@PathVariable int id){
+        //List<Card> card = cardRepository.findAllByCustomerId(id);
+
+        cardRepository.deleteAllByCustomerId(id);
+
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @PostMapping
@@ -41,22 +47,6 @@ public class CardController {
             .orElseThrow(() -> new ResourceNotFoundException("Card does not exist with id: " + id));
             return ResponseEntity.ok(card);
     }
-
-    // @PutMapping("{id}")
-    // public ResponseEntity<Card> updateCard(@PathVariable int id,@RequestBody Card cardDetails){
-    //     Card updateCard = cardRepository.findById(id)
-    //         .orElseThrow(() -> new ResourceNotFoundException("Card does not exist with id: " + id));
-
-    //     updateCard.setCc_number(cardDetails.getCc_number());
-    //     updateCard.setExpire_month(cardDetails.getExpire_month());
-    //     updateCard.setExpire_year(cardDetails.getExpire_year());
-    //     updateCard.setCvv_id(cardDetails.getCvv_id());
-    //     updateCard.setCard_type_id(cardDetails.getCard_type_id());
-
-    //     cardRepository.save(updateCard);
-
-    //     return ResponseEntity.ok(updateCard);
-    // }
 
     @PutMapping("{id}")
     public ResponseEntity<Card> updateCard(@PathVariable int id, @RequestBody Card cardInfo){

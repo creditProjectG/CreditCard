@@ -20,6 +20,10 @@ class CardService {
         return axios.put(CARD_REST_API_URL + '/' + id, card );
     }
 
+    deleteCardByCustomerId(c_id){
+        return axios.delete(CARD_REST_API_URL + '/customer/' + c_id)
+    }
+
     deleteCard(id){
         return axios.delete(CARD_REST_API_URL + '/' + id);
     }

@@ -2,6 +2,7 @@ package com.project.creditcard;
 
 import com.project.creditcard.model.Customer;
 import com.project.creditcard.repository.CardRepository;
+import com.project.creditcard.repository.CardTypeRepository;
 import com.project.creditcard.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -21,4 +22,7 @@ public class CreditcardApplication {
 
 	@Autowired
 	private CardRepository cardRepository;
+
+	@Autowired
+	private CardTypeRepository cardTypeRepository;
 }

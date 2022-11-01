@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react'
 import { Link, useParams, useNavigate } from 'react-router-dom'
 import CustomerService from '../services/CustomerService'
+import { TableContainer, Table, TableHead, TableRow, TableBody, TableCell, TablePagination } from '@mui/material';
 
 
 const ListCustomer = () => {
@@ -26,7 +27,6 @@ const ListCustomer = () => {
     const getAllCustomers = () => {
         CustomerService.getCustomers().then((response) => {
             setCustomers(response.data)
-            console.log(response.data);
         }).catch(error =>{
             console.log(error);
         })
@@ -49,53 +49,41 @@ const ListCustomer = () => {
         })
     }, [])
 
-    const deleteCustomer = (customerId) => {
-       CustomerService.deleteCustomer(customerId).then((response) =>{
-        getAllCustomers();
-
-       }).catch(error =>{
-           console.log(error);
-       })
-    }
-
     return (
         <div className = "container">
-            <h2 className = "text-center"> List Customers </h2>
-            <Link to={`/add-card/${id}`} className = "btn btn-primary mb-2" > Add Card </Link>
-            <table className="table table-bordered table-striped">
-                <thead>
-                    <tr>
-                        <th> Customer Id </th>
-                        <th> Customer First Name </th>
-                        <th> Customer Last Name </th>
-                        <th> Customer Email </th>
-                        <th> Street </th>
-                        <th> City </th>
-                        <th> State </th>
-                        <th> Zip </th>
-                        <th> Phone Number </th>
-                        <th> Options </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td> {id}</td>
-                        <td> {firstName}</td>
-                        <td> {lastName}</td>
-                        <td> {email}</td>
-                        <td> {address1}</td>
-                        <td> {customerCity}</td>
-                        <td> {customerState}</td>
-                        <td> {customerZip}</td>
-                        <td> {mobile_phone}</td>
-                        <td>
-                            <Link className="btn btn-info" to={`/edit-customer/${id}`}>Update</Link>
-                            <button className = "btn btn-danger" onClick = {() => deleteCustomer(id)}
-                            style = {{marginLeft:"10px"}}>Delete</button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+            <h2 className = "text-center mt-5 mb-5"> Customer Info </h2>
+            <TableContainer className="table table-bordered table-striped mb-5">
+                <Table>
+                    <TableHead>
+                        <TableCell> Customer First Name </TableCell>
+                        <TableCell> Customer Last Name </TableCell>
+                        <TableCell> Street </TableCell>
+                        <TableCell> City </TableCell>
+                        <TableCell> State </TableCell>
+                        <TableCell> Zip </TableCell>
+                        <TableCell> Phone Number </TableCell>
+                        <TableCell>Options</TableCell>
+                    </TableHead>
+                    <TableBody>
+                        <TableRow>
+                            <TableCell> {firstName}</TableCell>
+                            <TableCell> {lastName}</TableCell>
+                            <TableCell> {address1}</TableCell>
+                            <TableCell> {customerCity}</TableCell>
+                            <TableCell> {customerState}</TableCell>
+                            <TableCell> {customerZip}</TableCell>
+                            <TableCell> {mobile_phone}</TableCell>
+                            <TableCell>
+                                <Link 
+                                    className="btn btn-info" 
+                                    to={`/customer-info/${id}`}>
+                                    Options
+                                </Link>
+                            </TableCell>
+                        </TableRow>
+                    </TableBody>
+                </Table>
+            </TableContainer>
         </div>
     )
 }

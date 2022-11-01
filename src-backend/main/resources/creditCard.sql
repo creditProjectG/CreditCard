@@ -5,6 +5,7 @@ CREATE TABLE CREDIT_CARD(
     expire_year varchar(4),
     cvv_id varchar(10),
     card_type_id varchar(10),
+    card_type varchar(255),
     customer_id INT
     --FOREIGN KEY (id) REFERENCES customer(id)
 );

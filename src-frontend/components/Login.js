@@ -1,9 +1,11 @@
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import CustomerService from '../services/CustomerService'
-
+import AuthContext from "../context/AuthProvider";
 
 const Login = () => {
+    const { setAuth } = useContext(AuthContext);
+
     const userRef = useRef();
     const errRef = useRef();
 
@@ -36,20 +38,26 @@ const Login = () => {
 
         try {
             const customer = {username, user_password}
-            for(let index = 0; index < customers.length; index++){
-                await CustomerService.getCustomerById(index+1).then((response) => {
+
+            if(customer.username === 'admin' && customer.user_password === 'adminPass!23'){
+                navigate(`/customers`)
+            }
+            else{
+                const index = customers.findIndex(obj => obj.username === username)
+                const index2 = customers[index].id
+                await CustomerService.getCustomerById(index2).then((response) => {
                     if (response.data.username === customer.username && response.data.user_password === customer.user_password){
                         if (response.data.firstName){
-                            navigate(`/ListCustomer/${index+1}`)
+                            navigate(`/ListCustomer/${index2}`)
                         }
                         else{
-                            navigate(`/edit-customer/${index+1}`)
+                            navigate(`/edit-customer/${index2}`)
                         }
                     }
-                }).catch(error => {
-                    setErrMsg('Login Failed');
-                    console.log(error)
-                }) 
+                    else{
+                        setErrMsg('Login Failed')
+                    }
+                })
             }
         } catch (err) {
             setErrMsg('Login Failed');

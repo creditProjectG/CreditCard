@@ -1,29 +1,12 @@
-import React, {useState, useEffect, useRef} from 'react'
-import {Link, useNavigate, useParams } from 'react-router-dom'
+import React, {useState, useEffect} from 'react'
+import {useNavigate, useParams } from 'react-router-dom'
 import CustomerService from '../services/CustomerService'
-import { faCheck, faTimes, faInfoCircle } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
-const USER_REGEX = /^[A-z][A-z0-9-_]{3,23}$/;
-const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
 
 const AddCustomerComponent = () => {
-    const userRef = useRef();
-    const errRef = useRef();
 
     const [username, setUsername] = useState('');
-    const [validName, setValidName] = useState(false);
-    const [userFocus, setUserFocus] = useState(false);
 
     const [user_password, setUserPassword] = useState('');
-    const [validPwd, setValidPwd] = useState(false);
-    const [pwdFocus, setPwdFocus] = useState(false);
-
-    const [matchPwd, setMatchPwd] = useState('');
-    const [validMatch, setValidMatch] = useState(false);
-    const [matchFocus, setMatchFocus] = useState(false);
-
-    const [errMsg, setErrMsg] = useState('');
 
     const [customers, setCustomers] = useState([])
 
@@ -38,8 +21,6 @@ const AddCustomerComponent = () => {
     const [mobile_phone, setPhone] = useState('')
     const navigate = useNavigate();
     const {id} = useParams();
-
-    var create = 0
 
     const saveOrUpdateCustomer = async (e) => {
         e.preventDefault();
@@ -69,7 +50,7 @@ const AddCustomerComponent = () => {
             setCompanyName(response.data.company_name)
             setAddress(response.data.address1)
             setCustomerCity(response.data.customerCity)
-           setCustomerState(response.data.customerState)
+            setCustomerState(response.data.customerState)
             setCustomerZip(response.data.customerZip)
             setPhone(response.data.mobile_phone)
         }).catch(error => {
